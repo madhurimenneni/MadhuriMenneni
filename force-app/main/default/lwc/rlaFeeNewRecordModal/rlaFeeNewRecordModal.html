@@ -1,0 +1,26 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-29-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <lightning-modal-header label="New Fee"></lightning-modal-header>
+    <lightning-modal-body>
+      <lightning-record-edit-form object-api-name="Fee__c" onsuccess={handleSuccess}>
+        <lightning-input-field field-name="Residential_Loan_Application__c" value={loanApplicationId} required="true" > </lightning-input-field>
+        <lightning-input-field field-name="Fee_Type__c"> </lightning-input-field>
+        <lightning-input-field field-name="Amount__c"> </lightning-input-field>
+        <lightning-input-field field-name="Fee_Percent__c"> </lightning-input-field>
+        <lightning-input-field field-name="Description__c"> </lightning-input-field>
+        <lightning-button
+            class="slds-m-top_small"
+            type="submit"
+            label="Create"
+            onclick={startSpinner}
+        >
+        </lightning-button>
+    </lightning-record-edit-form>
+    </lightning-modal-body>
+  </template>

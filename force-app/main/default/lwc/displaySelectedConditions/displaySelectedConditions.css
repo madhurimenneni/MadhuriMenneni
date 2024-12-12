@@ -1,0 +1,15 @@
+.dummy{
+	color : blue;
+}
+.hidden-table:hover {
+     background-color: white !important;
+ }
+ .cardSpinner{
+    position: relative;;
+}
+.THIS .myUniqueTable th {
+    text-align: right !important;
+}
+.customTextArea{
+    width: 450px;
+}

@@ -1,0 +1,26 @@
+<template>
+    <div class="slds-p-around_medium slds-text-heading_large lgc-bg">
+        Conditions
+    </div>
+    <div class="slds-text-heading_large"></div>
+    <lightning-tabset variant="horizontal" class="slds-scrollable_x">
+            <template for:each={tempResult} for:item="w_record" >
+                <lightning-tab key={w_record.key} label={w_record.value.masterLabel} value={w_record.key}
+                    onactive={handleActive} >
+                    <lightning-input class="slds-var-p-around_small slds-text-heading_small" type="checkbox" checked={w_record.value.isChecked}
+                        data-id="checkbox" label={w_record.value.masterLabel} onchange={handleChange} value={w_record.key}>
+                    </lightning-input>
+                    <ul class="slds-scrollable" >
+                        <template for:each={childConditions} for:item="con">
+                            <li key={con.key}>
+                                <p class="slds-var-p-around_small">{con.value}</p>
+                            </li>
+                        </template>
+                        <br>
+                    </ul>
+                </lightning-tab>
+            </template>
+    </lightning-tabset>
+    <lightning-button variant="brand" label="Apply" title="Primary action" onclick={handleClick}
+        class="slds-var-p-around_small slds-float_right"></lightning-button>
+</template>

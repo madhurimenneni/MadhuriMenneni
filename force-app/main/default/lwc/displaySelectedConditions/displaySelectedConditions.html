@@ -1,0 +1,31 @@
+<template>
+    <div class="slds-clearfix">
+        <lightning-tile label="Conditions" class="slds-p-around_medium slds-text-heading_large lgc-bg"></lightning-tile>
+        <lightning-button variant="brand" label="Add Custom Condition" title="Add Custom Condition" onclick={createNewCustomConditionRecord}
+            class="slds-float_right" icon-name="utility:new"></lightning-button>
+    </div>
+    
+    <template if:true={areChildConditionsAvailable}>
+        <div class="slds-var-p-around_small myUniqueTable">
+        <c-l-w-c-custom-datatable-type
+                    key-field="Id"
+                    data={data} 
+                    columns={columns} 
+                    draft-values={draftValues} 
+                    oncellchange={handleCellChange}
+                    onrowaction={handleRowActions}
+                    onsave={handleSave}
+                    oncancel={handleCancel}
+                    hide-checkbox-column>
+        </c-l-w-c-custom-datatable-type>
+        </div>
+    </template>
+    <template if:false={areChildConditionsAvailable}>
+        <div class="slds-text-align_center slds-box">
+        <p>This RLA does not have any conditions.</p>
+    </div>
+    </template>
+    <div class="showSpinner" if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+    </div>
+</template>

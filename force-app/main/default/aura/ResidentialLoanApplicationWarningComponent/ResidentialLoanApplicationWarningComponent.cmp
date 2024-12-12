@@ -1,0 +1,192 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 12-02-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+    access="global" controller="ResidentialLoanApplicationController">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="residentialLoanAppRecord" type="Object"
+        description="A simplified view record object to be displayed" />
+    <aura:attribute name="recordError" type="String" description="An error message bound to force:recordData" />
+    <aura:attribute name="brokerEmail" type="string" />
+    <aura:attribute name="titleType" type="String" />
+    <aura:attribute name="collateral" type="Boolean" default="false" />
+    <aura:attribute name="unitNumber" type="String" />
+    <aura:attribute name="appraisalValue" type="Decimal" />
+    <aura:attribute name="appraisalDate" type="Date" />
+    <aura:attribute name="accountName" type="String" />
+    <aura:attribute name="optionType" type="String" />
+    <aura:attribute name="colleteralLegalAddress" type="String" />
+    <aura:attribute name="dayOfinterestAdjustmentDate" type="Integer" />
+    <aura:attribute name="missingPrimaryApplicant" type="Boolean" default="false" />
+    <aura:attribute name="missingUnitNumber" type="Boolean" default="false" />
+    <aura:attribute name="missingColleteralLegalAddress" type="Boolean" default="false" />
+    <aura:attribute name="missingAppraisalValue" type="Boolean" default="false" />
+    <aura:attribute name="missingAppraisalDate" type="Boolean" default="false" />
+    <aura:attribute name="missingParkingInfo" type="Boolean" default="false" />
+    <aura:attribute name="LTVError" type="Boolean" default="false" />
+    <aura:attribute name="creditScoreError" type="Boolean" default="false" />
+    <aura:attribute name="secondMortgageWarningMessage" type="Boolean" default="false" />
+    <aura:attribute name="uncheckASAP" type="Boolean" default="false" />
+    <aura:attribute name="checkASAP" type="Boolean" default="false" />
+    <aura:attribute name="blankCloseDate" type="Boolean" default="false" />
+    <aura:attribute name="missingCloseDate" type="Boolean" default="false" />
+    <aura:attribute name="thresholdCreditScore" type="Boolean" default="false" />
+    <aura:attribute name="LTVCreditScore575LimitError" type="Boolean" default="false" />
+    <aura:attribute name="LTVCreditScore500LimitError" type="Boolean" default="false" />
+    <aura:attribute name="shortfallOrOverageSign" type="String" />
+    <aura:attribute name="shortfallOverage" type="Decimal" />
+    <aura:attribute name="primeRateMessage" type="String" />
+    <aura:attribute name="collateralLegalPropNames" type="String" />
+    <aura:attribute name="parkingErrorPropNames" type="String" />
+    <aura:attribute name="hasData" type="Boolean" default="false" />
+    <aura:attribute name="unresolvedAMLFlags" type="Boolean" default="false" />
+    <aura:attribute name="highriskFlags" type="Boolean" default="false" />
+    <aura:attribute name="mediumriskFlags" type="Boolean" default="false" />
+    <aura:attribute name="zeroappraisalvalue" type="Boolean" default="false" />
+    <aura:attribute name="zeroappraisalPropNames" type="String" />
+    <aura:attribute name="aprwarning" type="Boolean" default="false"/>
+
+    
+
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:refreshView" action="{!c.isRecordDataRefreshed}" />
+    <force:recordData aura:id="recordData" recordId="{!v.recordId}"
+        fields="Id, Status, Prepayment_Penalty_Term_Months__c, Prepayment_Type__c" targetError="{!v.recordError}"
+        targetFields="{!v.residentialLoanAppRecord}" />
+    <!-- SAL - 312-->
+    <aura:handler event="force:refreshView" action="{!c.recordUpdated}" />
+    <aura:if isTrue="{!AND(v.residentialLoanAppRecord.Status != null, v.hasData == true)}">
+        <ui:message title="Warning" severity="warning" closable="true">
+            <ul>
+                <aura:if isTrue="{!v.secondMortgageWarningMessage}">
+                    <strong>2nd mortgages should have status 'New'</strong><br />
+                </aura:if>
+            </ul>
+            <ul>
+                <aura:if isTrue="{!v.unresolvedAMLFlags}">
+                    <strong>Unresolved AML Flags</strong><br />
+                </aura:if>
+            </ul>
+            <ul>
+                <aura:if isTrue="{!v.highriskFlags >= 1}">
+                    <strong>High Risk Flags are present</strong><br />
+                </aura:if>
+            </ul>
+            <ul>
+                <aura:if isTrue="{!v.mediumriskFlags}">
+                    <strong>Medium Risk Flags are present</strong><br />
+                </aura:if>
+            </ul>
+            <ul>
+                <aura:if isTrue="{!v.zeroappraisalvalue}">
+                    <strong>$0 appraisal is present on {!v.zeroappraisalPropNames} but it's not an AML issue.</strong><br />
+                </aura:if>
+            </ul>
+            <ul>
+                <aura:if isTrue="{!v.shortfallOrOverageSign == 'negative'}">
+                    <strong>This application is short on funding by
+                        <ui:outputCurrency aura:id="curr" value="{!v.shortfallOverage}" format="$##,##,###,###.00" />
+                    </strong><br />
+                </aura:if>
+                <aura:if isTrue="{!v.shortfallOrOverageSign == 'positive'}">
+                    <strong>This application has an extra
+                        <ui:outputCurrency aura:id="curr" value="{!v.shortfallOverage}" format="$##,##,###,###.00" /> in
+                        funding. Please ensure that the requested loan amount is correct.
+                    </strong><br />
+                </aura:if>
+            </ul>
+            <aura:if isTrue="{!OR(v.residentialLoanAppRecord.Status == '3. Received Commitment', v.residentialLoanAppRecord.Status == '4. Instructed', 
+                             v.residentialLoanAppRecord.Status == '5. Funds Requested', v.residentialLoanAppRecord.Status == '6. Funded', 
+                             v.residentialLoanAppRecord.Status == 'Cancelled', v.residentialLoanAppRecord.Status == 'Declined',
+                             v.residentialLoanAppRecord.Status == 'Complete')}">
+                <aura:if isTrue="{!v.missingColleteralLegalAddress}">
+                    <strong>Missing Collateral Legal Description: {!v.collateralLegalPropNames}</strong><br />
+                </aura:if>
+            </aura:if>
+            <aura:if isTrue="{!v.missingParkingInfo}">
+                <strong>Invalid parking type for : {!v.parkingErrorPropNames}</strong><br />
+            </aura:if>
+            <aura:if isTrue="{!AND(v.residentialLoanAppRecord.Status != 'DUPLICATE', v.residentialLoanAppRecord.Status != 'Unprocessed',
+                             v.residentialLoanAppRecord.Status != 'Failed')}">
+                <ul>
+                    <aura:if isTrue="{!v.brokerEmail == null}">
+                        <strong>Missing Broker Email</strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.aprwarning}">
+                        <strong>APR is > 30%. All mortgages must have an APR below 35%.</strong><br />
+                    </aura:if>
+                    <!-- SAL-330 -->
+                    <aura:if isTrue="{!v.missingUnitNumber}">
+                        <strong> Missing Unit Number for Strata property </strong><br />
+                    </aura:if>
+                    <!--aura:if isTrue = "{!v.missingColleteralLegalAddress}">
+                        <strong>Missing Collateral Legal Description</strong><br/>
+                    </aura:if-->
+                    <!-- SAL-378 -->
+                    <aura:if isTrue="{!v.LTVCreditScore575LimitError}">
+                        <strong>For LTV >=65% credit must be above 575</strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.LTVCreditScore500LimitError}">
+                        <strong>Credit is below 500 minimum</strong><br />
+                    </aura:if>
+                    <!-- SAL-378 -->
+                    <aura:if isTrue="{!v.thresholdCreditScore}">
+                        <strong>Credit score below required threshold</strong><br />
+                    </aura:if>
+                </ul>
+                <ul>
+                    <aura:if isTrue="{!v.accountName == 'Brightpath Capital'}">
+                        <aura:if isTrue="{!v.residentialLoanAppRecord.Prepayment_Type__c != 'Closed'}">
+                            <strong>Brightpath default prepayment type is Closed, please correct the
+                                value</strong><br />
+                        </aura:if>
+                        <aura:if isTrue="{!v.residentialLoanAppRecord.Prepayment_Penalty_Term_Months__c != 2}">
+                            <strong>Brightpath default prepayment penalty is 2 Months Interest, please correct the
+                                value</strong><br />
+                        </aura:if>
+                    </aura:if>
+                    <!-- <aura:if isTrue = "{!v.residentialLoanAppRecord.Final_Funding_Date__c == null}">
+                            <strong>Missing Funding Date</strong><br/>
+                        </aura:if> -->
+                    <aura:if isTrue="{!v.dayOfinterestAdjustmentDate != 1}">
+                        <strong>Interest adjustment date is not on the 1st of the month </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.missingPrimaryApplicant}">
+                        <strong>Missing Primary Applicant </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.uncheckASAP}">
+                        <strong>ASAP box cannot be checked </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.checkASAP}">
+                        <strong>ASAP box must be checked </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.blankCloseDate}">
+                        <strong>Close Date should be blank </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.missingCloseDate}">
+                        <strong>Missing Close Date </strong><br />
+                    </aura:if>
+                </ul>
+                <ul>
+                    <aura:if isTrue="{!v.missingAppraisalValue}">
+                        <strong>Missing Appraisal Value </strong><br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.missingAppraisalDate}">
+                        <strong>Missing Appraisal Date </strong><br />
+                    </aura:if>
+                </ul>
+                <aura:if isTrue="{!AND(v.residentialLoanAppRecord.Status != 'Complete', v.residentialLoanAppRecord.Status != 'Cancelled',
+                                   v.residentialLoanAppRecord.Status != 'Declined')}">
+                    <ul>
+                        <strong>{!v.primeRateMessage}</strong><br />
+                    </ul>
+                </aura:if>
+            </aura:if>
+        </ui:message>
+    </aura:if>
+</aura:component>

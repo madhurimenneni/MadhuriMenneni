@@ -1,0 +1,20 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-07-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+  <lightning-modal-header label="New Rental Income"></lightning-modal-header>
+  <lightning-modal-body>
+    <lightning-record-edit-form object-api-name="Rental_Income__c" onsuccess={handleSuccess}>
+      <lightning-input-field field-name="Property__c"> </lightning-input-field>
+      <lightning-input-field field-name="Unit_Number__c"> </lightning-input-field>
+      <lightning-input-field field-name="Monthly_Rental_Income__c"> </lightning-input-field>
+
+      <lightning-button class="slds-m-top_small" type="submit" label="Create" onclick={startSpinner}>
+      </lightning-button>
+    </lightning-record-edit-form>
+  </lightning-modal-body>
+</template>

@@ -1,0 +1,12 @@
+<template>
+    <lightning-input                   
+                   type="search"
+                   data-source="searchInputField"
+                   onclick={toggleResult}
+                   onchange={handleKeyChange}
+                   is-loading={isSearchLoading}
+                   value={searchKey}
+                   variant="label-hidden"
+                   placeholder={placeholder}
+               ></lightning-input>  
+</template>

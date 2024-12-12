@@ -1,0 +1,25 @@
+<template>
+    <lightning-modal-header label="New Loan Applicant Income"></lightning-modal-header>
+    <lightning-modal-body>
+      <lightning-record-edit-form object-api-name="LoanApplicantIncome" onsuccess={handleSuccess}>
+        <lightning-input-field field-name="LoanApplicantId" value={loanApplicantId} required="true"> </lightning-input-field>
+        <lightning-input-field field-name="LoanApplicationId" value={loanApplicationId}> </lightning-input-field>
+        <!-- <lightning-record-picker label="Loan Property" object-api-name="LoanApplicationProperty"> </lightning-record-picker> -->
+        <lightning-input-field field-name="Name" required="true"> </lightning-input-field>
+        <lightning-input-field field-name="IncomeSourceType"> </lightning-input-field>
+        <lightning-input-field field-name="Description__c"> </lightning-input-field>
+        <lightning-input-field field-name="Annual_Income__c"> </lightning-input-field>
+        <lightning-input-field field-name="Start_Date__c"> </lightning-input-field>
+        <lightning-input-field field-name="End_Date__c"> </lightning-input-field>
+        <lightning-input-field field-name="Currently_Receives__c"> </lightning-input-field>
+
+        <lightning-button
+            class="slds-m-top_small"
+            type="submit"
+            label="Create"
+            onclick={startSpinner}
+        >
+        </lightning-button>
+    </lightning-record-edit-form>
+    </lightning-modal-body>
+  </template>

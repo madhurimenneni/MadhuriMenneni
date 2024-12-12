@@ -1,0 +1,22 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 12-06-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <template if:true={hasLoanApplicationProperties}>
+        <template for:each={loanApplicationProperties} for:item="loanApplicationProperty">
+            <rlaDownpaymentNewRecordModal key={loanApplicationProperty.Id}
+                loanapplicationproperty={loanApplicationProperty}></rlaDownpaymentNewRecordModal>
+            <div key={loanApplicationProperty.Id} class="spacer"></div> <!-- Spacer div for adding space -->
+        </template>
+    </template>
+    <template if:true={error}>
+        <div class="slds-text-color_error">Error: {error}</div>
+    </template>
+    <template if:false={hasLoanApplicationProperties}>
+        <p>No Downpayments available to display.</p>
+    </template>
+</template>

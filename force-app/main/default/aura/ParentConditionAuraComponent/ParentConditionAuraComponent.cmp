@@ -1,0 +1,13 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >  
+     
+    <aura:attribute name="result" type="String"/>
+     
+    <c:conditionTemplateWebComponent aura:id="conditionTemplateWebComponent" onchildmethod="{!c.handleClick}"></c:conditionTemplateWebComponent>
+     
+    <lightning:card title="Parent Aura Component" class="slds-m-top_small">
+        <div class="slds-p-horizontal_small">
+            Name : {!v.result }
+        </div>
+    </lightning:card>
+     
+</aura:component>

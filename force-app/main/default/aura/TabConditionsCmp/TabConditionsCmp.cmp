@@ -1,0 +1,32 @@
+<aura:component controller="tabconditionsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+   <aura:attribute name="customers" type="List"/>
+    <aura:attribute name="childConditions" type="List"/>
+    <aura:attribute name="displayMap" type="map" default="{}"/>
+    <div class="slds-p-around_medium slds-text-heading_large lgc-bg">
+        <lightning:tile label="Standard Condition">
+        </lightning:tile>
+   </div>
+    <div class="slds-text-heading_large"></div>
+    <lightning:tabset variant="vertical">
+        <aura:iteration items="{!v.customers}" var="cus" indexVar="key">
+            <lightning:tab label="{!cus.value.MasterLabel}"
+                onactive="{!c.handleActive}" id="{!cus.key}">
+               <lightning:input class="slds-var-p-around_small slds-text-heading_small" type="checkbox"
+                  aura:id="box"  value="{!cus.key}" label="{!cus.value.MasterLabel}" onchange="{!c.handleChange}"></lightning:input>
+                
+                <ul class="slds-scrollable" style="height:12rem;width:40rem">
+                    <aura:iteration items="{!v.childConditions}" var="con" indexVar="key">
+                       <li key="{!con.key}">
+                            <p class="slds-var-p-around_small">{!con.value}</p>
+                       </li>
+                    </aura:iteration>
+                   <br></br>
+              </ul>
+                 </lightning:tab>
+                 </aura:iteration>     
+          </lightning:tabset>
+    <div class="slds-col modal-footer slds-modal__footer">        
+    <lightning:button variant="brand" label="Save" onclick="{! c.saveClick }" />
+</div>
+</aura:component>

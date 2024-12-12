@@ -1,0 +1,206 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="LiabilityController">
+    <aura:attribute name="recordId" type="String"/> 
+    <aura:attribute name="addLiabilityPopup" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="recordSaveError" type="String"  /> 
+    <aura:attribute name="hasData" type="Boolean" default="false"/> 
+    <aura:attribute name="liabilityData" type="List"/> 
+    <aura:attribute name="selectedValue" type="String" default = "" /> 
+    <aura:attribute name="selectedForEdit" type="String" default = "" /> 
+    <aura:attribute name="isChecked" type="Boolean" default="false"  /> 
+    <aura:handler event="force:refreshView" action="{!c.doInit}"/>
+    <div>
+        <div style="color:red">
+            <b>Please click on Select option to Submit/Delete the liability.</b> 
+        </div>
+        <table class="slds-table slds-table_fixed-layout slds-table_resizable-cols" aria-labelledby="element-with-table-label other-element-with-table-label">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Select">Select</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Liability Type">Liability Type</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Description">Description</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Outstanding Balance">Outstanding Balance</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Monthly Payment">Monthly Payment</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Credit Card Balance">Credit Card Balance</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Annual Liability Balance Calculated">Annual Liability Balance Calculated</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Payoff">Payoff</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Loan Application Property">Loan Application Property</div>
+                    </th>
+                </tr>
+            </thead>
+            <aura:if isTrue = "{!v.hasData}">
+                <aura:iteration var="liability" items="{!v.liabilityData}" indexVar="index">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <lightning:input type="radio" name="select" value="{!liability.Id}"  aura:id="deleteLiability" onchange="{!c.handleSelectedValue}"/>
+                            </td>
+                            <td>
+                                {!liability.Name}
+                            </td>
+                            <td>
+                                <aura:if isTrue="{!v.selectedForEdit == liability.Id}">
+                                    <lightning:select value="{!liability.Liability_Type__c}" >
+                                        <option value="Alimony">Alimony</option>
+                                        <option value="Auto Loan">Auto Loan</option>
+                                        <option value="Auto Lease">Auto Lease</option>
+                                        <option value="Child Support">Child Support</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Collection">Collection</option>
+                                        <option value="HELOC">HELOC</option>
+                                        <option value="Income Tax">Income Tax</option>
+                                        <option value="Lease">Lease</option>
+                                        <option value="Unsecured LOC">Unsecured LOC</option>
+                                        <option value="Loan">Loan</option>
+                                        <option value="Mortgage">Mortgage</option>
+                                        <option value="Personal Loan">Personal Loan</option>
+                                        <option value="Student Loan">Student Loan</option>
+                                        <option value="Wage Garnishment">Wage Garnishment</option>
+                                        <option value="Other">Other</option>
+                                    </lightning:select>
+                                    <aura:set attribute="else">   
+                                        {!liability.Liability_Type__c}
+                                    </aura:set>
+                                </aura:if>    
+                                <!-- {!liability.Liability_Type__c} -->
+                            </td>
+
+                            <td>
+                                {!liability.Description__c}
+                            </td>
+                            <td>
+                                {!liability.Balance__c}
+                            </td>
+                            <td>
+                                {!liability.Monthly_Payment__c}
+                            </td>
+                            <td>
+                                {!liability.Credit_Card_Balance__c}
+                            </td>
+                            <td>
+                                {!liability.Annual_Liability_Balance_Calculated__c}
+                            </td>
+                            <td>
+                                {!liability.Payoff__c}
+                            </td>
+                            <td>
+                                {!liability.Loan_Application_Property__c}
+                            </td>
+
+                            <!-- <td>
+                                <aura:if isTrue="{!v.selectedForEdit == liability.Id}">
+                                    <lightning:input type="date"  name="Valdate"  value="{!liability.Liability_Date__c}"/>
+                                    <aura:set attribute="else">   
+                                        {!liability.Liability_Date__c}
+                                    </aura:set>
+                                </aura:if> 
+                                
+                            </td>-->
+                            <td>
+                                
+                                <aura:if isTrue="{!v.selectedForEdit == liability.Id}">
+                                    <button class="slds-button" onclick="{!c.saveLiabilitys}" data-save="{!liability.Id}" title="Save">
+                                        <lightning:icon iconName="utility:save" size="small" class="icon" />
+                                    </button>
+                                     <button onclick="{!c.closeEdit}" data-close="{!liability.Id}"  class="slds-button slds-button_icon slds-cell-close__button slds-m-left_x-small" tabindex="0" title="close">
+                                            <lightning:icon iconName="utility:close" size="xx-small" alternativeText="close"/>
+                                        </button>
+                                    <aura:set attribute="else">   
+                                        <button onclick="{!c.editLiabilitys}" data-edit="{!liability.Id}"  class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" title="Edit">
+                                            <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
+                                        </button>
+                                         <button class="slds-button" onclick="{!c.deleteLiabilitys}" data-data="{!liability.Id}" title="Delete">
+                                          <lightning:icon iconName="utility:delete" size="small" class="icon" />
+                                          </button>
+                                    </aura:set>
+                                </aura:if>     
+                               
+                                
+                                <lightning:icon iconName="utility:delete" size="small" alternativeText="Delete" onclick="{!c.deleteLiabilitys}" data-data="{!liability.Id}"/>  
+                                <lightning:icon iconName="utility:success" size="small" alternativeText="Delete" onclick="{!c.calculateLiabilitys}"/> 
+                            </td> 
+                        </tr>
+                    </tbody>
+                </aura:iteration>
+            </aura:if>
+        </table>
+        <force:recordData aura:id="record"
+                          layoutType="FULL"
+                          recordId="{!v.recordId}"
+                          fields="Id,LoanApplicationId"
+                          targetFields="{!v.record}"
+                          targetError="{!v.recordSaveError}"/>
+         <aura:if isTrue="{!v.addLiabilityPopup}">
+            <div class="demo-only" style="height: 640px;">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <lightning:buttonIcon iconName="utility:close"
+                                                  onclick="{!c.handleCancel }"
+                                                  alternativeText="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"/>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add liability</h2>
+                            <lightning:recordEditForm objectApiName="Liability__c"
+                                                      aura:id="accForm"
+                                                      onload="{!c.handleOnLoad}"
+                                                      onsubmit="{!c.handleOnSubmit}"
+                                                      onsuccess="{!c.handleOnSuccess}"
+                                                      onerror="{!c.handleOnError}">
+                                <lightning:messages />
+                                <!--<div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Loan_Application_Property__c" value="{!v.recordId}"/>
+                                    </div>
+                                </div>
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Liability_Amount__c"/>
+                                    </div>
+                                </div>
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Liability_Source__c"/>
+                                    </div>
+                                </div>
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Liability_Date__c"/>
+                                    </div>
+                                </div>-->
+                                <lightning:button variant="brand" type="submit" name="save" label="Save" />
+                                <lightning:button type="cancel" name="Cancel" label="Cancel" variant="neutral" class="slds-m-top_medium" onclick="{!c.handleCancel}"/>
+                            </lightning:recordEditForm>
+                        </header>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div> 
+        </aura:if> 
+          <aura:if isTrue="{!v.selectedForEdit == ''}">
+        <b><lightning:button label="ADD liability" title="Base" variant="base" onclick="{!c.handleAddLiability }"/> </b>
+        <b><lightning:button label="Submit" title="Base" variant="brand" onclick="{!c.calculateLiabilitys }" class="slds-float_right"/> </b>
+        </aura:if>
+    </div>
+</aura:component>

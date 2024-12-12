@@ -1,0 +1,19 @@
+<template>
+  <lightning-modal-header label="New Valuation"></lightning-modal-header>
+  <lightning-modal-body>
+    <lightning-record-edit-form object-api-name="Valuation__c" onsuccess={handleSuccess} onerror={handleError}>
+      <lightning-input-field field-name="Loan_Application_Property__c" value={loanApplicationPropertyId}
+        required="true"> </lightning-input-field>
+      <lightning-input-field field-name="LoanApplicationId" value={loanApplicationId}> </lightning-input-field>
+      <lightning-input-field field-name="Valuation_Amount__c"> </lightning-input-field>
+      <lightning-input-field field-name="Valuation_Source__c"
+        onchange={handleOnchangeOfValuationSource}></lightning-input-field>
+      <lightning-input-field field-name="Valuation_Date__c"> </lightning-input-field>
+      <template lwc:if={appraisedValueSelected}>
+        <lightning-input-field field-name="Appraisal_Company_Name__c" required="true"> </lightning-input-field>
+      </template>
+      <lightning-button class="slds-m-top_small" type="submit" label="Create" onclick={startSpinner}>
+      </lightning-button>
+    </lightning-record-edit-form>
+  </lightning-modal-body>
+</template>

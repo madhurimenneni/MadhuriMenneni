@@ -1,0 +1,33 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 11-14-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <lightning-modal-header label="New AML Flag"></lightning-modal-header>
+    <lightning-modal-body>
+      <lightning-record-edit-form object-api-name="AML_Flag__c" onsuccess={handleSuccess}>
+        <lightning-input-field field-name="Residential_Loan_Application__c" value={loanApplicationId} required="true" > </lightning-input-field>
+        <lightning-input-field field-name="Type__c"> </lightning-input-field>
+        <lightning-input-field field-name="Description__c"> </lightning-input-field>
+        <lightning-input-field field-name="Related_Applicant__c"> </lightning-input-field>
+        <lightning-input-field field-name="Related_Property__c"> </lightning-input-field>
+        <lightning-input-field field-name="Related_Broker__c"> </lightning-input-field>
+        <lightning-input-field field-name="Resolved__c"> </lightning-input-field>
+        <lightning-input-field field-name="Resolution_Notes__c"> </lightning-input-field>
+        <lightning-input-field field-name="Resolution_Notes_CO__c"> </lightning-input-field>
+        <lightning-input-field field-name="Resolution_Notes_Manager__c"> </lightning-input-field>
+    
+        
+        <lightning-button
+            class="slds-m-top_small"
+            type="submit"
+            label="Create"
+            onclick={startSpinner}
+        >
+        </lightning-button>
+    </lightning-record-edit-form>
+    </lightning-modal-body>
+  </template>

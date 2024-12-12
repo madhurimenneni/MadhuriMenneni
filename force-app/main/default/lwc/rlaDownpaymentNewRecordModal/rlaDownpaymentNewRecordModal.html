@@ -1,0 +1,36 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 12-06-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <div class="slds-box">
+        <div class="slds-clearfix">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-tile label={loanapplicationproperty.Name} href="javascript:void(0);"
+                        onclick={handleClick} data-oppid={loanapplicationproperty.Id}
+                        class="slds-var-p-around_small slds-float_top slds-float_left"></lightning-tile>
+                </div>
+                <div class="slds-col">
+                    <lightning-button variant="brand" label="Create New Downpayment" title="Create New Downpayment"
+                        onclick={createNewRecord} class="slds-var-p-around_small slds-float_top slds-float_right"
+                        icon-name="utility:new"></lightning-button>
+                </div>
+            </div>
+
+        </div>
+        <div class="slds-align_absolute-left">
+            <c-custom-types-global class="slds-align_absolute-left" onsave={handleSave} data={downpaymentRecords}
+                columns={columns} key-field="Id" draft-values={draftValues} onrowaction={handleRowAction}
+                sorted-by={sortBy} sorted-direction={sortDirection} onsort={doSorting} 
+                selected-rows={selectedRows} onrowselection={handleRowSelection}>
+            </c-custom-types-global>
+        </div>
+    </div>
+    <div class="showSpinner" if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+    </div>
+</template>

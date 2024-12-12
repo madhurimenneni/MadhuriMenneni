@@ -1,0 +1,170 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="DownpaymentController">
+    <aura:attribute name="recordId" type="String"/> 
+    <aura:attribute name="addDownpaymentPopup" type="Boolean" default="false"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="recordSaveError" type="String"  /> 
+    <aura:attribute name="hasData" type="Boolean" default="false"/> 
+    <aura:attribute name="downpaymentData" type="List"/> 
+    <aura:attribute name="selectedValue" type="String"  /> 
+    <aura:attribute name="isChecked" type="Boolean" default="false"  /> 
+    <aura:attribute name="selectedForEdit" type="String" default = "" /> 
+    <aura:handler event="force:refreshView" action="{!c.doInit}"/>
+    <div>
+        <div style="color:red">
+            <b>Please click on Select option to delete the DownPayment.</b> 
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+            <thead>
+                <tr class="slds-line-height_reset">
+                   <!-- <th class="" scope="col">
+                        <div class="slds-truncate" title="Opportunity Name">Select</div>
+                    </th>-->
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Opportunity Name">Amount</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Opportunity Name">Source</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Opportunity Name">Date</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Opportunity Name">Action</div>
+                    </th>
+                </tr>
+            </thead>
+            
+            <aura:if isTrue = "{!v.hasData}">
+                <aura:iteration var="downpayment" items="{!v.downpaymentData}" indexVar="index">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                           <!-- <td>-->
+                                <!-- <lightning:input type="radio" name="select" value="{!downpayment.Id}"  aura:id="deleteDownpayment" onchange="{!c.handleSelectedValue}" checked="{!downpayment.Default__c}"/>-->
+                                <!--<lightning:input type="checkbox" value="{!downpayment.Id}"  aura:id="deleteDownpayment" onchange="{!c.handleSelectedValue}" checked="{!downpayment.Default__c}"/>-->
+                           <!-- </td>-->
+                            <td>
+                                <aura:if isTrue="{!v.selectedForEdit == downpayment.Id}">
+                                    <lightning:input type="number" value="{!downpayment.Amount__c}" formatter="currency"></lightning:input>
+                                    <aura:set attribute="else">   
+                                        <lightning:formattedNumber value="{!downpayment.Amount__c}" style="currency" currencyCode="CAD"/>
+                                    </aura:set>
+                                </aura:if>    
+                                
+                            </td>
+                            <td>
+                                <aura:if isTrue="{!v.selectedForEdit == downpayment.Id}">
+                                    <lightning:select value="{!downpayment.Source__c}" >
+                                        <option value="Savings">Savings</option>
+                                        <option value="Sale of existing">Sale of existing</option>
+                                        <option value="Deposit on Purchase">Deposit on Purchase</option>
+                                        <option value="Gift">Gift</option>
+                                        <option value="Borrowed">Borrowed</option>
+                                        <option value="Inheritance">Inheritance	</option>
+                                        <option value="RRSPs / Investments">RRSPs / Investments</option>
+                                        <option value="Other">Other</option>
+                                    </lightning:select>
+                                    <aura:set attribute="else">   
+                                        {!downpayment.Source__c}
+                                    </aura:set>
+                                </aura:if>    
+                                
+                                
+                                
+                            </td>
+                            <td>
+                                <aura:if isTrue="{!v.selectedForEdit == downpayment.Id}">
+                                    <lightning:input type="date"  name="Valdate"  value="{!downpayment.Date__c}"/>
+                                    <aura:set attribute="else">   
+                                        {!downpayment.Date__c}
+                                    </aura:set>
+                                </aura:if> 
+                                
+                            </td>
+                            <td>
+                                <!---->
+                                <!-- <lightning:icon iconName="utility:delete" size="small" alternativeText="Delete" onclick="{!c.deleteDownpayments}" data-data="{!downpayment.Id}"/>  -->
+                                <!-- <lightning:icon iconName="utility:success" size="small" alternativeText="Delete" onclick="{!c.calculateDownpayments}"/> -->
+                                <aura:if isTrue="{!v.selectedForEdit == downpayment.Id}">
+                                    <button class="slds-button" onclick="{!c.saveDownpayment}" data-save="{!downpayment.Id}" title="Save">
+                                        <lightning:icon iconName="utility:save" size="small" class="icon" />
+                                    </button>
+                                    <button onclick="{!c.closeEdit}" data-close="{!downpayment.Id}"  class="slds-button slds-button_icon slds-cell-close__button slds-m-left_x-small" tabindex="0" title="close">
+                                        <lightning:icon iconName="utility:close" size="xx-small" alternativeText="close"/>
+                                    </button>
+                                    <aura:set attribute="else">   
+                                        <button onclick="{!c.editDownpayment}" data-edit="{!downpayment.Id}"  class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" title="Edit">
+                                            <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
+                                        </button>
+                                        <button class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" onclick="{!c.deleteDownpayment}" data-data="{!downpayment.Id}" tabindex="0" title="Delete">
+                                        <lightning:icon iconName="utility:delete" size="small" class="icon" />
+                                         </button>
+                                    </aura:set>
+                                </aura:if>     
+                            </td>
+                        </tr>
+                    </tbody>
+                </aura:iteration>
+            </aura:if>
+        </table>
+        
+        <force:recordData aura:id="record"
+                          layoutType="FULL"
+                          recordId="{!v.recordId}"
+                          fields="Id,LoanApplicationId"
+                          targetFields="{!v.record}"
+                          targetError="{!v.recordSaveError}"/>
+        <aura:if isTrue="{!v.addDownpaymentPopup}">
+            <div class="demo-only" style="height: 640px;">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <lightning:buttonIcon iconName="utility:close"
+                                                  onclick="{!c.handleCancel }"
+                                                  alternativeText="close"
+                                                  variant="bare-inverse"
+                                                  class="slds-modal__close"/>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Downpayment</h2>
+                            
+                            <lightning:recordEditForm objectApiName="Downpayment__c"
+                                                      aura:id="accForm"
+                                                      onload="{!c.handleOnLoad}"
+                                                      onsubmit="{!c.handleOnSubmit}"
+                                                      onsuccess="{!c.handleOnSuccess}"
+                                                      onerror="{!c.handleOnError}">
+                                <lightning:messages />
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Loan_Application_Property__c" value="{!v.recordId}"/>
+                                    </div>
+                                </div>
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Source__c"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Amount__c"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-grid slds-gutters">
+                                    <div class = "slds-col slds-size_1-of-1">
+                                        <lightning:inputField fieldName="Date__c"/>
+                                    </div>
+                                </div>
+                                <lightning:button variant="brand" type="submit" name="save" label="Save" />
+                                <lightning:button type="cancel" name="Cancel" label="Cancel" variant="neutral" class="slds-m-top_medium" onclick="{!c.handleCancel}"/>
+                            </lightning:recordEditForm>
+                        </header>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </aura:if>
+        <b><lightning:button label="ADD DOWNPAYMENT" title="Base" variant="base" onclick="{!c.handleAddDownpayment }"/> </b>
+        <!-- <b><lightning:button label="Submit" title="Base" variant="brand" onclick="{!c.calculateDownpayments }" class="slds-float_right"/> </b> -->
+    </div>
+</aura:component>

@@ -1,0 +1,32 @@
+<template>
+    <div class="slds-box">
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col">
+            <lightning-button variant="brand" label="Create New Asset" title="Create New Asset" onclick={createNewRecord}
+            class="slds-var-p-around_small slds-float_top slds-align_center" icon-name="utility:new"></lightning-button>
+        </div>
+        <div class="slds-col">
+            <div class="slds-text-heading_small slds-text-align_center">Total Asset Value : {sumOfTotalAssetValue}</div>
+        </div>
+      </div>
+   </div>
+   <div class="slds-box">
+    <div class="slds-align_absolute-left">
+    <c-custom-types-global class="slds-align_absolute-left"
+    onsave={handleSave} 
+    data={loanApplicantAssetsRecords}
+    columns={columns}
+    key-field="Id"
+    draft-values={draftValues}
+    onrowaction={handleRowAction}
+    sorted-by={sortBy}
+    sorted-direction={sortDirection}
+    onsort={doSorting}
+    hide-checkbox-column >
+</c-custom-types-global>
+</div>
+</div>
+<div class="showSpinner" if:true={showSpinner}>
+    <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+</div>
+</template>
