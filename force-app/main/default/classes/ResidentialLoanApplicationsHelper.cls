@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 12-10-2024
+ * @last modified on  : 11-01-2024
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class ResidentialLoanApplicationsHelper {
@@ -305,13 +305,13 @@ public class ResidentialLoanApplicationsHelper {
                         rlaSubCondition.Residential_Loan_Application__c = recId;
                         rlaSubCondition.RLA_Standard_Condition__c = rlasc.Id;
                         rlaSubCondition.Condition__c = mscon.Sub_Conditions__r.Description__c;
-                        if ( ( mscon.Sub_Conditions__r.MasterLabel == 'X6' || mscon.Sub_Conditions__r.MasterLabel == 'X7' ) && 
-                            residentialLoanAppIdSet.get(recId).Brokerage_Name__c == 'RBC Alternate Mortgage Solutions' ||  residentialLoanAppIdSet.get(recId).Brokerage_Name__c == 'CIBC Mortgage Options') {
-                                rlaSubCondition.Condition_Assignee__c = 'Lender's Lawyer';
+                        if ( (mscon.Sub_Conditions__r.MasterLabel == '6' || mscon.Sub_Conditions__r.MasterLabel == '7') && 
+                        (residentialLoanAppIdSet.get(recId).Brokerage_Name__c == 'RBC Alternate Mortgage Solutions' || 
+                        residentialLoanAppIdSet.get(recId).Brokerage_Name__c == 'CIBC Mortgage Options') ) {
+                        rlaSubCondition.Condition_Assignee__c = 'Lender\'s Lawyer';
                         } else {
-                            rlaSubCondition.Condition_Assignee__c = mscon.Sub_Conditions__r.Condition_Assignee__c;
+                        rlaSubCondition.Condition_Assignee__c = mscon.Sub_Conditions__r.Condition_Assignee__c;
                         }
-                       
                         rlaSubConditionsToInsert.add( rlaSubCondition );
                     }
                 }
